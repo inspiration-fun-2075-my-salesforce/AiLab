@@ -1,0 +1,21 @@
+road("tampa", "houston", 200).
+road("gordon", "tampa", 300).
+road("houston", "gordon", 100).
+road("houston", "kansas_city", 120).
+road("gordon", "kansas_city", 130).
+
+route(Town1, Town2, Distance) :- 
+    road(Town1, Town2, Distance).
+
+route(Town1, Town2, Distance) :- 
+    road(Town1, Intermediate, Dist1),
+    route(Intermediate, Town2, Dist2),
+    Distance is Dist1 + Dist2.
+
+:- initialization(main).
+
+main :-
+    format('Distance from tampa to houston: ~w~n', [Distance1]),
+    route("tampa", "houston", Distance1),
+    format('Distance from tampa to kansas_city: ~w~n', [Distance2]),
+    route("tampa", "kansas_city", Distance2).
