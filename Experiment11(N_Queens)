@@ -1,0 +1,23 @@
+n_queens(N, Qs) :-
+    length(Qs, N),
+    findall(X, between(1, N, X), Domain),
+    safe_queens(Qs, Domain).
+
+safe_queens([], _).
+safe_queens([Q|Qs], Domain) :-
+    select(Q, Domain, RemainingDomain),
+    safe_queens(Qs, RemainingDomain),
+    safe_from(Q, Qs, 1).
+
+safe_from(_, [], _).
+safe_from(Q, [Q1|Qs], D) :-
+    Q =\= Q1,
+    abs(Q - Q1) =\= D,
+    D1 is D + 1,
+    safe_from(Q, Qs, D1).
+
+:- initialization(run).
+
+run :-
+    n_queens(8, Qs),
+    write(Qs), nl.
