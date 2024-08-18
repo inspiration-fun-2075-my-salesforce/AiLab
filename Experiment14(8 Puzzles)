@@ -1,0 +1,67 @@
+% Entry point for the IDS algorithm
+ids :-
+    format('Starting IDS algorithm~n'),
+    start(State),
+    format('Starting state:~n'),
+    show([State]),
+    ids(State).
+
+% Iterative Deepening Search (IDS)
+ids(State) :-
+    between(1, 100, Depth), % Adjust the maximum depth if needed
+    format('Trying depth limit: ~w~n', [Depth]),
+    dfs(State, Depth, [], Path),
+    !,
+    reverse(Path, Solution),
+    show(Solution),
+    length(Solution, N),
+    format('~nMoves = ~w~n', [N]).
+
+% Depth-First Search (DFS) with depth limit
+dfs(State, 0, Path, [State|Path]) :-
+    goal(State).
+
+dfs(State, Depth, Visited, Path) :-
+    Depth > 0,
+    move(State, Next, _),
+    \+ memberchk(Next, Visited),  % Prevent cycles
+    NewDepth is Depth - 1,
+    dfs(Next, NewDepth, [State|Visited], Path).
+
+% Display the solution
+show([]).
+show([State|States]) :-
+    State = state(A,B,C,D,E,F,G,H,I),
+    format('~n~w ~w ~w~n', [A,B,C]),
+    format('~w ~w ~w~n', [D,E,F]),
+    format('~w ~w ~w~n', [G,H,I]),
+    show(States).
+
+% Puzzle definition
+start(state(6,1,3,4,0,5,7,2,8)).
+
+goal(state(0,1,2,3,4,5,6,7,8)).
+
+% Define the possible moves
+move(state(X,0,B,C,D,E,F,G,H), state(0,X,B,C,D,E,F,G,H), left).
+move(state(A,X,C,D,0,F,G,H,I), state(A,0,C,D,X,F,G,H,I), left).
+move(state(A,B,X,D,E,0,G,H,I), state(A,B,0,D,E,X,G,H,I), left).
+move(state(A,B,C,X,E,F,0,H,I), state(A,B,C,0,E,F,X,H,I), left).
+move(state(0,X,B,C,D,E,F,G,H), state(X,0,B,C,D,E,F,G,H), right).
+move(state(A,0,C,D,X,F,G,H,I), state(A,X,C,D,0,F,G,H,I), right).
+move(state(A,B,0,D,E,X,G,H,I), state(A,B,X,D,E,0,G,H,I), right).
+move(state(A,B,C,0,E,F,G,X,I), state(A,B,C,X,E,F,G,0,I), right).
+move(state(A,B,C,D,E,F,0,H,X), state(A,B,C,D,E,F,X,H,0), right).
+move(state(0,B,C,D,E,F,G,H,I), state(D,B,C,0,E,F,G,H,I), down).
+move(state(A,0,C,D,E,F,G,H,I), state(A,E,C,D,0,F,G,H,I), down).
+move(state(A,B,0,D,E,F,G,H,I), state(A,B,F,D,E,0,G,H,I), down).
+move(state(A,B,C,0,E,F,G,H,I), state(A,B,C,G,E,F,0,H,I), down).
+move(state(A,B,C,D,0,F,G,H,I), state(A,B,C,D,H,F,G,0,I), down).
+move(state(A,B,C,D,E,0,G,H,I), state(A,B,C,D,E,I,G,H,0), down).
+move(state(A,B,C,D,E,F,0,H,I), state(A,B,C,0,E,F,D,H,I), up).
+move(state(A,B,C,D,0,F,G,H,I), state(A,B,C,0,D,F,G,H,I), up).
+move(state(A,B,C,D,E,0,G,H,I), state(A,B,C,0,E,F,G,H,I), up).
+move(state(A,B,C,D,E,F,0,H,I), state(A,B,C,0,E,F,G,H,I), up).
+
+% Initialization directive to run the example
+:- initialization(ids).
