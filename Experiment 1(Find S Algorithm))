@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # To read the data in the CSV file
-data = pd.read_csv("Sport car price.csv")
+data = pd.read_csv("Experiment1.csv")
 print(data, "\n")
 
 # Making an array of all the attributes
